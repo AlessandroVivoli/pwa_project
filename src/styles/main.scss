@@ -1,0 +1,16 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css";
+
+:root,
+[data-bs-theme="light"] {
+  --bs-primary-rgb: 255, 255, 0;
+}
+
+.navbar-nav > li {
+  margin: 0 5px;
+}
+
+@media (max-width: 991px) {
+  .navbar-nav > li {
+    margin: 0;
+  }
+}

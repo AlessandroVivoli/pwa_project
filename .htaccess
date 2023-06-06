@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteRule ^$ src/ [L]
+    RewriteRule (.*) src/$1 [L]
+
+    ErrorDocument 400 /src/errors/views/400.php
+    ErrorDocument 401 /src/errors/views/401.php
+    ErrorDocument 403 /src/errors/views/403.php
+    ErrorDocument 404 /src/errors/views/404.php
+    ErrorDocument 500 /src/errors/views/500.php
+</IfModule>

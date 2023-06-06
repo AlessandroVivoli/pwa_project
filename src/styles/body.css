@@ -1,0 +1,7 @@
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  position: relative;
+  min-height: calc(100vh - (88px * 2));
+}

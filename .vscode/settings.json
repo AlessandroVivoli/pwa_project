@@ -1,0 +1,9 @@
+{
+  "dotenv.enableAutocloaking": false,
+  "files.associations": {
+    "*.sql": "sql"
+  },
+  "[sql]": {
+    "editor.formatOnSave": false
+  }
+}
