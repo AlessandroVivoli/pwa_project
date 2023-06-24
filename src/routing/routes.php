@@ -1,6 +1,12 @@
 <?php
 class Route
 {
+
+    /**
+     * @var array
+     */
+    private static $routes = array();
+
     private string $name;
     private string $path;
 
@@ -8,6 +14,8 @@ class Route
     {
         $this->name = $name;
         $this->path = $path;
+
+        array_push(self::$routes, $this);
     }
 
     public function getName()
@@ -17,6 +25,11 @@ class Route
     public function getPath()
     {
         return $this->path;
+    }
+
+    public static function getRoutes()
+    {
+        return self::$routes;
     }
 }
 
@@ -30,8 +43,13 @@ abstract class AppRoutes
     public static Route $login;
     public static Route $register;
     public static Route $newBlogPost;
+    public static Route $logout;
+    public static Route $deleteBlog;
+    public static Route $addBlogPost;
+    public static Route $edit;
+    public static Route $save;
 
-    public static $routes;
+    public static $routes = array();
 
     public static function init()
     {
@@ -43,16 +61,16 @@ abstract class AppRoutes
         self::$login =  new Route('Login', 'login');
         self::$register =  new Route('Register', 'register');
         self::$newBlogPost =  new Route('New Blog Post', 'administration/new');
+        self::$logout = new Route('Logout', 'logout');
+        self::$deleteBlog = new Route('Deleting blog post from the database...', 'deleteBlog');
+        self::$addBlogPost = new Route('Adding blog post to the database...', 'addBlogPost');
+        self::$edit = new Route('Edit Blog Post', 'edit');
+        self::$save = new Route('Saving changes to the database...', 'save');
 
-        self::$routes = array(
-            self::$home->getPath() => self::$home,
-            self::$music->getPath() => self::$music,
-            self::$sport->getPath() => self::$sport,
-            self::$administration->getPath() => self::$administration,
-            self::$blog->getPath() => self::$blog,
-            self::$login->getPath() => self::$login,
-            self::$register->getPath() => self::$register,
-            self::$newBlogPost->getPath() => self::$newBlogPost,
-        );
+        $routesArray = Route::getRoutes();
+
+        foreach ($routesArray as $route) {
+            self::$routes[$route->getPath()] = $route;
+        }
     }
 }

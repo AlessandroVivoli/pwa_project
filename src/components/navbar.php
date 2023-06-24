@@ -4,7 +4,7 @@ $request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
 
 <nav class="navbar py-4 navbar-expand-lg bg-primary" data-bs-theme="light">
     <div class="container-lg container-fluid">
-        <a href="/" class="navbar-brand position-absolute top-0 bottom-0"><img src="/assets/images/logo-sopitas-3.webp" alt="Sopitas" height="80px"></a>
+        <a href="/" class="navbar-brand position-absolute top-0"><img src="/assets/images/logo-sopitas-3.webp" alt="Sopitas" height="80px"></a>
         <div class="d-flex d-lg-none flex-row w-100 justify-content-end">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent">
                 <span class="navbar-toggler-icon"></span>
@@ -26,7 +26,7 @@ $request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
                     <a href="/administration" class="nav-link <?php if ($request == '/administration') echo "active" ?> text-uppercase fw-bold">Administration</a>
                 </li>
                 <?php
-                if (isset($_SESSION['user']) || isset($_COOKIE['user'])) {
+                if (isset($_SESSION['user'])) {
                 ?>
                     <li class="nav-item">
                         <a href="/logout" class="nav-link text-uppercase fw-bold">Logout</a>

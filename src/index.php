@@ -3,6 +3,12 @@ include '../vendor/autoload.php';
 include 'routing/routes.php';
 include 'models/user.php';
 
+function require_with($path, $vars)
+{
+    extract($vars);
+    require $path;
+}
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
@@ -10,11 +16,16 @@ session_start();
 
 $request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
 
+if (!isset($_SESSION['user']) && isset($_COOKIE['user'])) {
+    $_SESSION['user'] = $_COOKIE['user'];
+}
+
 $path = explode('?', $request)[0];
 $path = preg_replace('/^\//', '', $path);
 
 $viewDir = '/views/';
 $errorsDir = '/errors/';
+$actionsDir = '/actions/';
 
 AppRoutes::init();
 
@@ -47,15 +58,7 @@ unset($_SERVER['status_message']);
 
         $documentDir = __DIR__ . $viewDir;
 
-        switch ($path) {
-            case AppRoutes::$login->getPath():
-            case AppRoutes::$register->getPath():
-                break;
-
-            default:
-                unset($_SESSION['redirectTo']);
-                break;
-        }
+        include __DIR__ . '/utils/unset_session_variables.php';
 
         switch ($path) {
             case AppRoutes::$home->getPath():
@@ -90,8 +93,24 @@ unset($_SERVER['status_message']);
                 require $documentDir . 'register.php';
                 break;
 
-            case 'logout':
+            case AppRoutes::$logout->getPath():
                 require $documentDir . 'logout.php';
+                break;
+
+            case AppRoutes::$deleteBlog->getPath():
+                require __DIR__ . $actionsDir . 'deleteBlog.php';
+                break;
+
+            case AppRoutes::$addBlogPost->getPath():
+                require __DIR__ . $actionsDir . 'addBlogPost.php';
+                break;
+            
+            case AppRoutes::$edit->getPath():
+                require $documentDir.'administration/child_views/new_blog_post.php';
+                break;
+
+            case AppRoutes::$save->getPath():
+                require __DIR__.$actionsDir.'editBlogPost.php';
                 break;
 
             default:

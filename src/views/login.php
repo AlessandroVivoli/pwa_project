@@ -1,5 +1,9 @@
 <?php
 
+if (isset($_SESSION['user'])) {
+    header('Location: /');
+}
+
 /**
  * @var string|null
  */
@@ -21,7 +25,7 @@ if (isset($_POST['username'], $_POST['password'])) {
     $mysql = null;
 
     try {
-        $mysql = new mysqli($_ENV["HOSTNAME"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DB"], $_ENV["PORT"]);
+        $mysql = new mysqli($_ENV["HOSTNAME"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DB"]);
         $stmt = $mysql->prepare('SELECT  * FROM select_user WHERE username=?');
         $stmt->bind_param('s', $username);
         $stmt->execute();
@@ -61,20 +65,23 @@ if (isset($_POST['username'], $_POST['password'])) {
 
         error_log($e->getMessage());
 
-        if ($mysql != null) $mysql->close();
+        if ($mysql != null)
+            $mysql->close();
     }
 }
 ?>
 <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1">
     <form class="needs-validation" id="loginForm" method="post" novalidate>
         <div class="form-outline mb-4">
-            <input type="text" name="username" id="username" class="form-control" autocomplete="username" placeholder="Username" required>
+            <input type="text" name="username" id="username" class="form-control" autocomplete="username"
+                placeholder="Username" required>
             <div class="invalid-feedback">
                 Username is required
             </div>
         </div>
         <div class="form-outline mb-4">
-            <input type="password" name="password" id="password" class="form-control" autocomplete="current-password" placeholder="Password" required>
+            <input type="password" name="password" id="password" class="form-control" autocomplete="current-password"
+                placeholder="Password" required>
             <div class="invalid-feedback">
                 Password is required
             </div>
@@ -94,22 +101,26 @@ if (isset($_POST['username'], $_POST['password'])) {
             <button type="submit" class="btn btn-primary">Sign in</button>
         </div>
         <div class="text-center">
-            <p>Not a member? <a href="/register" class="link text-decoration-none fw-semibold text-nowrap">Register</a></p>
+            <p>Not a member? <a href="/register" class="link text-decoration-none fw-semibold text-nowrap">Register</a>
+            </p>
         </div>
     </form>
 </div>
 <div class="toast-container top-0 end-0 p-3">
-    <div class="toast align-items-center text-bg-success border-0" id="registerSuccess" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast align-items-center text-bg-success border-0" id="registerSuccess" role="alert"
+        aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
                 Registered successfully!
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
         </div>
     </div>
 </div>
 <div class="toast-container top-0 end-0 p-3">
-    <div class="toast align-items-center text-bg-danger border-0" id="loginInvalid" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast align-items-center text-bg-danger border-0" id="loginInvalid" role="alert" aria-live="assertive"
+        aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
                 <?php
@@ -118,7 +129,8 @@ if (isset($_POST['username'], $_POST['password'])) {
                 }
                 ?>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -143,13 +155,13 @@ if (isset($_POST['username'], $_POST['password'])) {
 
     <?php if ($registerSuccess) { ?>
         registerToastBs.show();
-    <?php
+        <?php
         unset($_SESSION['registerSuccess']);
     }
     ?>
 
     <?php if (isset($_SERVER['loginInvalid'])) { ?>
         loginToastBs.show();
-    <?php
+        <?php
     } ?>
 </script>
