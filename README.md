@@ -23,7 +23,7 @@ sudo mysql_upgrade
 #### Mac
 
 ```bash
-cd /Applications/XAMPP/xamppfiled/bin/
+cd /Applications/XAMPP/xamppfiles/bin/
 sudo mysql_upgrade
 ```
 
