@@ -28,12 +28,6 @@ SET
 
 -- -----------------------------------------------------
 
--- -----------------------------------------------------
-
--- Schema pwa_project
-
--- -----------------------------------------------------
-
 CREATE SCHEMA IF NOT EXISTS `pwa_project` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE `pwa_project`;
@@ -44,7 +38,7 @@ USE `pwa_project`;
 
 -- -----------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `pwa_project`.`users` (
+CREATE TABLE IF NOT EXISTS `users` (
     `uuid` BINARY(16) NOT NULL,
     `username` VARCHAR(256) NOT NULL,
     `password` VARCHAR(256) NOT NULL,
@@ -59,22 +53,17 @@ CREATE TABLE IF NOT EXISTS `pwa_project`.`users` (
 
 -- -----------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `pwa_project`.`blog_posts` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `user_uuid` BINARY(16) NOT NULL,
-    `type` ENUM('music', 'sport') NOT NULL,
-    `image` BLOB NOT NULL,
-    `title` VARCHAR(50) NOT NULL,
-    `text` MEDIUMTEXT NOT NULL,
-    `date_added` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+CREATE TABLE IF NOT EXISTS `blog_posts` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `type` enum('music', 'sport') COLLATE utf8mb4_unicode_ci NOT NULL,
+    `image` blob NOT NULL,
+    `title` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `text` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+    `date_added` date DEFAULT NULL,
+    `date_modified` date DEFAULT NULL,
     PRIMARY KEY (`id`),
-    INDEX `blog_posts_ibfk_1` (`user_uuid` ASC),
-    UNIQUE INDEX `user_uuid_UNIQUE` (`user_uuid` ASC),
-    UNIQUE INDEX `title_UNIQUE` (`title` ASC),
-    CONSTRAINT `blog_posts_ibfk_1` FOREIGN KEY (`user_uuid`) REFERENCES `pwa_project`.`users` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
-
-USE `pwa_project`;
+    UNIQUE KEY `title_UNIQUE` (`title`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------
 
@@ -82,7 +71,7 @@ USE `pwa_project`;
 
 -- -----------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `pwa_project`.`select_user` (
+CREATE TABLE IF NOT EXISTS `select_user` (
     `uuid` INT,
     `username` INT,
     `password` INT,
@@ -97,7 +86,6 @@ CREATE TABLE IF NOT EXISTS `pwa_project`.`select_user` (
 
 DELIMITER $$
 
-USE `pwa_project` $$
 CREATE OR REPLACE DEFINER = `root` @ `localhost` FUNCTION `BIN_TO_UUID`(BIN BINARY(16))
 RETURNS char(36) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci
 BEGIN 
@@ -132,7 +120,6 @@ DELIMITER ;
 
 DELIMITER $$
 
-USE `pwa_project` $$
 CREATE OR REPLACE DEFINER = `root` @ `localhost` FUNCTION `UUID_TO_BIN`(UUID CHARACTER(36))
 RETURNS binary(16) BEGIN 
     DECLARE bin BINARY(16);
@@ -148,29 +135,63 @@ DELIMITER ;
 
 -- -----------------------------------------------------
 
-DROP TABLE IF EXISTS `pwa_project`.`select_user`;
-
-USE `pwa_project`;
+DROP TABLE IF EXISTS `select_user`;
 
 CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = `root` @ `localhost` SQL SECURITY DEFINER
-VIEW `pwa_project`.`select_user` AS
+VIEW `select_user` AS
 SELECT
-    `BIN_TO_UUID`(`pwa_project`.`users`.`uuid`) AS `uuid`,
-    `pwa_project`.`users`.`username` AS `username`,
-    `pwa_project`.`users`.`password` AS `password`,
-    `pwa_project`.`users`.`level` AS `level`
-FROM `pwa_project`.`users`;
+    `BIN_TO_UUID`(`users`.`uuid`) AS `uuid`,
+    `users`.`username` AS `username`,
+    `users`.`password` AS `password`,
+    `users`.`level` AS `level`
+FROM `users`;
 
-USE `pwa_project`;
+-- -----------------------------------------------------
+
+-- Trigger `pwa_project`.`users`.`INSERT_UUID`
+
+-- -----------------------------------------------------
 
 DELIMITER $$
 
-USE `pwa_project` $$
-CREATE DEFINER = `root` @ `localhost` TRIGGER IF NOT EXISTS `pwa_project`.`INSERT_UUID` 
-BEFORE INSERT ON `pwa_project`.`users` 
+CREATE DEFINER = `root` @ `localhost` TRIGGER IF NOT EXISTS `INSERT_UUID` 
+BEFORE INSERT ON `users` 
 FOR EACH ROW 
 BEGIN
     SET NEW.uuid = UUID_TO_BIN(UUID());
+END $$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+
+-- Trigger `pwa_project`.`blog_posts`.`BLOG_POST_INSERT`
+
+-- -----------------------------------------------------
+
+DELIMITER $$
+
+CREATE DEFINDER = `root` @ `localhost` TRIGGER IF NOT EXISTS `BLOG_POST_INSERT`
+BEFORE INSERT ON `blog_posts`
+BEGIN
+    SET NEW.date_added = CURDATE();
+EMD $$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+
+-- Trigger `pwa_project`.`blog_posts`.`BLOG_POST_UPDATE`
+
+-- -----------------------------------------------------
+
+DELIMITER $$
+
+CREATE DEFINER = `root` @ `localhost` TRIGGER IF NOT EXISTS `BLOG_POST_UPDATE`
+BEFORE UPDATE ON `blog_posts`
+FOR EACH ROW
+BEGIN
+    SET NEW.date_modified = CURDATE();
 END $$
 
 DELIMITER ;

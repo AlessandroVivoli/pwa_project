@@ -1,4 +1,7 @@
 <?php
+if (isset($_SESSION['user'])) {
+    header('Location: /');
+}
 
 if (isset($_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
     $username = $_POST['username'];
@@ -17,7 +20,7 @@ if (isset($_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
         $mysql = null;
 
         try {
-            $mysql = new mysqli($_ENV["HOSTNAME"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DB"], $_ENV["PORT"]);
+            $mysql = new mysqli($_ENV["HOSTNAME"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DB"]);
             $stmt = $mysql->prepare('INSERT INTO users (username, password, level) VALUES (?, ?, ?)');
             $stmt->bind_param('ssi', $username, $password, $level);
             try {
@@ -39,11 +42,12 @@ if (isset($_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
 
             $mysql->close();
         } catch (mysqli_sql_exception $e) {
-            $e->$_SERVER['invalidRegister'] = 'Registration failed! Something went wrong.';
+            $_SERVER['invalidRegister'] = 'Registration failed! Something went wrong.';
 
             error_log($e->getMessage());
 
-            if ($mysql != null) $mysql->close();
+            if ($mysql != null)
+                $mysql->close();
         }
     }
 }
@@ -57,13 +61,14 @@ if (isset($_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
             </div>
         </div>
         <div class="form-outline mb-4">
-            <input type="text" name="password" id="password" class="form-control" placeholder="Password" required>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
             <div class="invalid-feedback">
                 Password is required
             </div>
         </div>
         <div class="form-outline mb-4">
-            <input type="text" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control"
+                placeholder="Confirm Password" required>
             <div class="invalid-feedback">
                 You need to confirm your password
             </div>
@@ -72,12 +77,14 @@ if (isset($_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
             <button type="submit" class="btn btn-primary">Sign up</button>
         </div>
         <div class="text-center">
-            <p>Already a member? <a href="/login" class="link text-decoration-none fw-semibold text-nowrap">Login</a></p>
+            <p>Already a member? <a href="/login" class="link text-decoration-none fw-semibold text-nowrap">Login</a>
+            </p>
         </div>
     </form>
 </div>
 <div class="toast-container top-0 end-0 p-3">
-    <div class="toast align-items-center text-bg-danger border-0" id="registerFailed" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast align-items-center text-bg-danger border-0" id="registerFailed" role="alert" aria-live="assertive"
+        aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
                 <?php
@@ -86,7 +93,8 @@ if (isset($_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
                 }
                 ?>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -110,9 +118,9 @@ if (isset($_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
 
     <?php
     if (isset($_SERVER['invalidRegister'])) {
-    ?>
+        ?>
         toastRegisterBs.show();
-    <?php
+        <?php
     }
     ?>
 </script>

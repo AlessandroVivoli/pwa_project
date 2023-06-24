@@ -1,1 +1,70 @@
-@import"https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css";:root,[data-bs-theme=light]{--bs-primary-rgb: 255, 255, 0}.navbar-nav>li{margin:0 5px}@media(max-width: 991px){.navbar-nav>li{margin:0}}/*# sourceMappingURL=main.css.map */
+@import 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css';
+:root,
+[data-bs-theme='light'] {
+  --bs-primary-rgb: 255, 255, 0;
+}
+.navbar-nav > li {
+  margin: 0 5px;
+}
+@media (max-width: 991px) {
+  .navbar-nav > li {
+    margin: 0;
+  }
+} /*# sourceMappingURL=main.css.map */
+
+#music-blogs {
+    --hr-bg: pink;
+}
+
+#sport-blogs {
+    --hr-bg: lime;
+}
+
+section > hr {
+    border-top: 4px solid;
+    position: relative;
+    overflow: visible;
+    opacity: 1;
+    color: var(--hr-bg);
+    margin: 40px 0;
+}
+
+section > hr::before {
+    content: attr(data-content);
+    text-transform: uppercase;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: block;
+    color: white;
+    opacity: 1;
+    font-weight: bold;
+    background-color: var(--hr-bg);
+    padding: 0px 8px;
+    width: fit-content;
+    height: fit-content;
+    transform: translateY(-50%);
+}
+
+.blog-card {
+    position: relative;
+    padding: 15px;
+}
+
+.blog-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: black;
+    opacity: 0;
+    transition: opacity 500ms ease;
+}
+
+.blog-card:hover::after {
+    opacity: .2;
+}
